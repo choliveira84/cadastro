@@ -5,6 +5,8 @@ import br.com.cliente.cadastro.exceptions.EntityNotFoundException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import br.com.cliente.cadastro.controllers.cliente.ClienteDTO;
 import br.com.cliente.cadastro.controllers.cliente.ClientePostDTO;
 import br.com.cliente.cadastro.modelo.entity.Cliente;
@@ -38,12 +40,14 @@ class ClienteServiceImpl implements ClienteService {
         return returnDTO(cliente);
     }
 
+    @Transactional
     @Override
     public ClienteDTO save(ClientePostDTO dto) {
         Cliente cliente = repository.save(returnTO(dto));
         return returnDTO(cliente);
     }
 
+    @Transactional
     @Override
     public void update(String nome, Long id) {
         ClienteDTO dto = findById(id);
@@ -54,6 +58,7 @@ class ClienteServiceImpl implements ClienteService {
         repository.save(cliente);
     }
 
+    @Transactional
     @Override
     public void delete(Long id) {
         if (!repository.existsById(id)) {
