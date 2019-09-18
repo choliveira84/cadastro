@@ -1,6 +1,6 @@
 package br.com.cliente.cadastro.modelo.services;
 
-import javax.persistence.EntityNotFoundException;
+import br.com.cliente.cadastro.exceptions.EntityNotFoundException;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
