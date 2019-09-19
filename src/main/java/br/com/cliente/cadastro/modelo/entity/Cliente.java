@@ -20,28 +20,28 @@ import lombok.Data;
 @Data
 @Entity
 public class Cliente implements Serializable {
-
-    /**
-     *
-     */
     private static final long serialVersionUID = 1L;
+
+    public static final String VALIDACAO_NOME = "O nome do cliente não pode estar em branco";
+    public static final String VALIDACAO_DATA_NASCIMENTO = "A data de nascimento não pode ser nula";
+	public static final String VALIDACAO_SEXO = "O sexo do cliente não pode estar nulo";
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false, unique = true)
     private Long id;
 
-    @NotNull(message = "O nome do cliente não pode estar nulo")
-    @NotBlank(message = "O nome do cliente não pode estar em branco")
+    @NotBlank(message = VALIDACAO_NOME)
     @Size(max = 255, message = "O Tamanho do nome do cliente deve ter até 100 caracteres")
     @Column(nullable = false, length = 255)
     private String nome;
 
-    @NotNull(message = "O sexo do cliente não pode estar nulo")
+    @NotNull(message = VALIDACAO_SEXO)
     @Column(nullable = false, length = 1)
     private Character sexo;
 
-    @NotNull(message = "A data de nascimento não pode ser nula")
+    @NotNull(message = VALIDACAO_DATA_NASCIMENTO)
     @Column(nullable = false)
     private LocalDate dataNascimento;
 
