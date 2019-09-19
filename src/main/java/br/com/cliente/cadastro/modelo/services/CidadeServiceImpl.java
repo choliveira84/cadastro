@@ -69,6 +69,15 @@ class CidadeServiceImpl implements CidadeService {
         }
     }
 
+    @Override
+    public boolean existisById(Long id) {
+        if (id == null || id.equals(0l)) {
+            throw new IllegalArgumentException("Id inválido");
+        }
+
+      return repository.existsById(id);
+    }
+
     private CidadeDTO returnDTO(Cidade source) {
         CidadeDTO target = new CidadeDTO();
 

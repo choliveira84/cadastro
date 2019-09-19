@@ -23,5 +23,6 @@ public class ClientePostDTO {
     @NotNull(message = Cliente.VALIDACAO_DATA_NASCIMENTO)
     private LocalDate dataNascimento;
 
-    private String cidade;
+    @NotNull
+    private Long cidade;
 }

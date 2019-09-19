@@ -11,9 +11,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import br.com.cliente.cadastro.controllers.cidade.CidadeDTO;
 import br.com.cliente.cadastro.controllers.cliente.ClienteDTO;
 import br.com.cliente.cadastro.controllers.cliente.ClientePatchDTO;
 import br.com.cliente.cadastro.controllers.cliente.ClientePostDTO;
+import br.com.cliente.cadastro.modelo.entity.Cidade;
 import br.com.cliente.cadastro.modelo.entity.Cliente;
 import br.com.cliente.cadastro.modelo.repositories.ClienteRepository;
 
@@ -25,6 +27,9 @@ class ClienteServiceImpl implements ClienteService {
 
     @Autowired
     private ClienteRepository repository;
+
+    @Autowired
+    private CidadeService cidadeService;
 
     @Override
     public ClienteDTO findByNome(String nome) {
@@ -55,6 +60,13 @@ class ClienteServiceImpl implements ClienteService {
             throw new InvalidDateException("A data atual não pode ser menor que a data de nascimento");
         }
 
+        Long codigoCidade = dto.getCidade();
+
+        if (!cidadeService.existisById(codigoCidade)) {
+            throw new EntityNotFoundException(
+                    String.format("Impossível salvar o cliente. Cidade de id '%d' inexistente", codigoCidade));
+        }
+
         Integer idade = Period.between(dataNascimento, dataAtual).getYears();
 
         return returnDTO(repository.save(returnTO(dto, idade)));
@@ -63,7 +75,9 @@ class ClienteServiceImpl implements ClienteService {
     @Transactional
     @Override
     public ClienteDTO update(ClientePatchDTO dto, Long id) {
-        Cliente cliente = returnTO(findById(id), dto.getNome());
+        ClienteDTO clienteRecuperado = findById(id);
+        
+        Cliente cliente = returnTO(clienteRecuperado, dto.getNome());
 
         return returnDTO(repository.save(cliente));
     }
@@ -83,6 +97,8 @@ class ClienteServiceImpl implements ClienteService {
 
         BeanUtils.copyProperties(source, target);
 
+        target.setCidade(source.getCidade().getId());
+
         return target;
     }
 
@@ -91,8 +107,9 @@ class ClienteServiceImpl implements ClienteService {
 
         BeanUtils.copyProperties(source, target);
 
+        target.setCidade(new Cidade(source.getCidade()));
+        
         target.setIdade(idade);
-
         return target;
     }
 
@@ -101,8 +118,9 @@ class ClienteServiceImpl implements ClienteService {
 
         BeanUtils.copyProperties(source, target);
 
+        target.setCidade(new Cidade(source.getCidade()));
+        
         target.setNome(nome);
-
         return target;
     }
 

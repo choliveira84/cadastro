@@ -11,12 +11,14 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * Cidade
  */
 @Data
 @Entity
+@NoArgsConstructor
 public class Cidade implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -43,6 +45,10 @@ public class Cidade implements Serializable {
 
     public void setEstado(String estado) {
         this.estado = estado.toUpperCase();
+    }
+
+    public Cidade(Long id) {
+        this.id = id;
     }
 
 }

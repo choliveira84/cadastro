@@ -15,4 +15,6 @@ public interface CidadeService {
     List<CidadeDTO> findByEstado(String estado);
 
     CidadeDTO save(CidadePostDTO dto);
+
+    boolean existisById(Long id);
 }

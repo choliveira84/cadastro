@@ -19,5 +19,5 @@ public class ClienteDTO {
 
     private Integer idade;
 
-    private String cidade;
+    private Long cidade;
 }
