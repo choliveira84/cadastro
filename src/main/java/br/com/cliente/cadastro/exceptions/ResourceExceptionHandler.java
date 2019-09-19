@@ -9,6 +9,7 @@ import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 /**
  * ResourceExceptionHandler
@@ -37,7 +38,7 @@ public class ResourceExceptionHandler {
     }
 
     @ExceptionHandler(value = HttpRequestMethodNotSupportedException.class)
-    public ResponseEntity<DefaultError> methodNotSupportErrorHandler(HttpServletRequest req, Exception e)
+    public ResponseEntity<DefaultError> HttpRequestMethodNotSupportHandler(HttpServletRequest req, Exception e)
             throws Exception {
 
         DefaultError err = new DefaultError(System.currentTimeMillis(), HttpStatus.METHOD_NOT_ALLOWED.value(),
@@ -45,4 +46,24 @@ public class ResourceExceptionHandler {
 
         return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(err);
     }
+
+    @ExceptionHandler(InvalidDateException.class)
+    public ResponseEntity<DefaultError> InvalidDateHandler(InvalidDateException e, HttpServletRequest request) {
+        DefaultError err = new DefaultError(System.currentTimeMillis(), HttpStatus.BAD_REQUEST.value(),
+                "Datas inválidas", e.getMessage(), request.getRequestURI());
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err);
+    }
+
+    @ExceptionHandler(value = MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<DefaultError> MethodArgumentTypeMismatchHandler(HttpServletRequest req, Exception e)
+            throws Exception {
+
+        DefaultError err = new DefaultError(System.currentTimeMillis(), HttpStatus.BAD_REQUEST.value(),
+                "Falha durante a conversão", e.getMessage(), req.getRequestURI());
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err);
+    }
+
+    // TODO HttpMessageNotReadableException
 }

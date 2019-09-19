@@ -1,6 +1,7 @@
 package br.com.cliente.cadastro.modelo.services;
 
 import br.com.cliente.cadastro.controllers.cliente.ClienteDTO;
+import br.com.cliente.cadastro.controllers.cliente.ClientePatchDTO;
 import br.com.cliente.cadastro.controllers.cliente.ClientePostDTO;
 
 /**
@@ -15,5 +16,5 @@ public interface ClienteService {
 
     void delete(Long id);
 
-    void update(String nome, Long id);
+    ClienteDTO update(ClientePatchDTO nome, Long id);
 }

@@ -1,6 +1,10 @@
 package br.com.cliente.cadastro.modelo.services;
 
+import br.com.cliente.cadastro.exceptions.InvalidDateException;
 import br.com.cliente.cadastro.exceptions.EntityNotFoundException;
+
+import java.time.LocalDate;
+import java.time.Period;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import br.com.cliente.cadastro.controllers.cliente.ClienteDTO;
+import br.com.cliente.cadastro.controllers.cliente.ClientePatchDTO;
 import br.com.cliente.cadastro.controllers.cliente.ClientePostDTO;
 import br.com.cliente.cadastro.modelo.entity.Cliente;
 import br.com.cliente.cadastro.modelo.repositories.ClienteRepository;
@@ -43,26 +48,31 @@ class ClienteServiceImpl implements ClienteService {
     @Transactional
     @Override
     public ClienteDTO save(ClientePostDTO dto) {
-        Cliente cliente = repository.save(returnTO(dto));
-        return returnDTO(cliente);
+        LocalDate dataAtual = LocalDate.now();
+        LocalDate dataNascimento = dto.getDataNascimento();
+
+        if (dataNascimento.isAfter(dataAtual)) {
+            throw new InvalidDateException("A data atual não pode ser menor que a data de nascimento");
+        }
+
+        Integer idade = Period.between(dataNascimento, dataAtual).getYears();
+
+        return returnDTO(repository.save(returnTO(dto, idade)));
     }
 
     @Transactional
     @Override
-    public void update(String nome, Long id) {
-        ClienteDTO dto = findById(id);
-        Cliente cliente = returnTO(dto);
+    public ClienteDTO update(ClientePatchDTO dto, Long id) {
+        Cliente cliente = returnTO(findById(id), dto.getNome());
 
-        cliente.setNome(nome);
-
-        repository.save(cliente);
+        return returnDTO(repository.save(cliente));
     }
 
     @Transactional
     @Override
     public void delete(Long id) {
         if (!repository.existsById(id)) {
-            new EntityNotFoundException(String.format("Não foi encontrado o cliente para o id '%d'", id));
+            throw new EntityNotFoundException(String.format("Não foi encontrado o cliente para o id '%d'", id));
         }
 
         repository.deleteById(id);
@@ -76,18 +86,22 @@ class ClienteServiceImpl implements ClienteService {
         return target;
     }
 
-    private Cliente returnTO(ClientePostDTO source) {
+    private Cliente returnTO(ClientePostDTO source, Integer idade) {
         Cliente target = new Cliente();
 
         BeanUtils.copyProperties(source, target);
+
+        target.setIdade(idade);
 
         return target;
     }
 
-    private Cliente returnTO(ClienteDTO source) {
+    private Cliente returnTO(ClienteDTO source, String nome) {
         Cliente target = new Cliente();
 
         BeanUtils.copyProperties(source, target);
+
+        target.setNome(nome);
 
         return target;
     }

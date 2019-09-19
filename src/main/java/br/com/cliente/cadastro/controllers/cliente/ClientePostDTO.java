@@ -9,15 +9,12 @@ import lombok.Data;
  */
 @Data
 public class ClientePostDTO {
-    private Long id;
-
+    
     private String nome;
 
     private Character sexo;
 
     private LocalDate dataNascimento;
-
-    private Integer idade;
 
     private String cidade;
 }

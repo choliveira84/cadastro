@@ -38,8 +38,6 @@ public class Cliente implements Serializable {
     private String nome;
 
     @NotNull(message = "O sexo do cliente não pode estar nulo")
-    @NotBlank(message = "O sexo do cliente não pode estar em branco")
-    @Size(max = 1, message = "O Tamanho do nome do cliente deve ter até 100 caracteres")
     @Column(nullable = false, length = 1)
     private Character sexo;
 
@@ -48,7 +46,6 @@ public class Cliente implements Serializable {
     private LocalDate dataNascimento;
 
     @NotNull(message = "A idade do cliente não pode estar nulo")
-    @NotBlank(message = "A idade do cliente não pode estar em branco")
     @Column(nullable = false)
     private Integer idade;
 
