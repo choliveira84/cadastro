@@ -5,14 +5,20 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+
+import br.com.cliente.cadastro.controllers.cidade.CidadePostDTO;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -62,4 +68,30 @@ public class DemoApplicationTests {
 		this.mockMvc.perform(delete("/clientes/1")).andExpect(status().isNotFound());
 	}
 
+	@Test
+	public void findCidadeyNome_thenStatus404() throws Exception {
+		this.mockMvc.perform(get("/cidades/nome")).andExpect(status().isNotFound());
+	}
+
+	@Test
+	public void findCidadeyEstado_thenStatus404() throws Exception {
+		this.mockMvc.perform(get("/cidades/estado/pe")).andExpect(status().isNotFound());
+	}
+
+	@Test
+	public void saveCidade_thenStatus404() throws Exception {
+		//O estado não existe, logo, deve retornar um 404
+		String json = new ObjectMapper().writeValueAsString(new CidadePostDTO("Recife", "XZ"));
+
+		this.mockMvc.perform(post("/cidades").content(json).contentType(MediaType.APPLICATION_JSON)
+				.accept(MediaType.APPLICATION_JSON)).andExpect(status().isNotFound());
+	}
+
+	@Test
+	public void saveCidade_thenStatus201() throws Exception {
+		String json = new ObjectMapper().writeValueAsString(new CidadePostDTO("Recife", "PE"));
+
+		this.mockMvc.perform(post("/cidades").content(json).contentType(MediaType.APPLICATION_JSON)
+				.accept(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
+	}
 }

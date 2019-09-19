@@ -4,12 +4,14 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
 import br.com.cliente.cadastro.modelo.entity.Cidade;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 /**
  * ClienteDTO
  */
 @Data
+@AllArgsConstructor
 public class CidadePostDTO {
     @NotBlank(message = Cidade.VALIDACAO_NOME)
     private String nome;
