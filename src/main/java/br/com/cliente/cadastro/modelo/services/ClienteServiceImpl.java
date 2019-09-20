@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import br.com.cliente.cadastro.controllers.cidade.CidadeDTO;
 import br.com.cliente.cadastro.controllers.cliente.ClienteDTO;
 import br.com.cliente.cadastro.controllers.cliente.ClientePatchDTO;
 import br.com.cliente.cadastro.controllers.cliente.ClientePostDTO;
@@ -33,7 +32,7 @@ class ClienteServiceImpl implements ClienteService {
 
     @Override
     public ClienteDTO findByNome(String nome) {
-        Cliente cliente = repository.findByNome(nome);
+        Cliente cliente = repository.findByNomeIgnoreCase(nome);
 
         if (cliente == null) {
             throw new EntityNotFoundException(String.format("Não foi encontrado o cliente para o nome '%s'", nome));
@@ -76,7 +75,7 @@ class ClienteServiceImpl implements ClienteService {
     @Override
     public ClienteDTO update(ClientePatchDTO dto, Long id) {
         ClienteDTO clienteRecuperado = findById(id);
-        
+
         Cliente cliente = returnTO(clienteRecuperado, dto.getNome());
 
         return returnDTO(repository.save(cliente));
@@ -108,7 +107,7 @@ class ClienteServiceImpl implements ClienteService {
         BeanUtils.copyProperties(source, target);
 
         target.setCidade(new Cidade(source.getCidade()));
-        
+
         target.setIdade(idade);
         return target;
     }
@@ -119,7 +118,7 @@ class ClienteServiceImpl implements ClienteService {
         BeanUtils.copyProperties(source, target);
 
         target.setCidade(new Cidade(source.getCidade()));
-        
+
         target.setNome(nome);
         return target;
     }

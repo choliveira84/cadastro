@@ -13,7 +13,7 @@ import br.com.cliente.cadastro.modelo.entity.Cliente;
 @Repository
 public interface ClienteRepository extends JpaRepository<Cliente, Long> {
 
-    Cliente findByNome(String nome);
+    Cliente findByNomeIgnoreCase(String nome);
 
     Optional<Cliente> findById(Long id);
 }

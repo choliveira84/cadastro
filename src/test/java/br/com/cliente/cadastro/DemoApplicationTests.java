@@ -8,16 +8,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-
 import br.com.cliente.cadastro.controllers.cidade.CidadePostDTO;
-
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RunWith(SpringRunner.class)
@@ -28,9 +24,15 @@ public class DemoApplicationTests {
 	@Autowired
 	private MockMvc mockMvc;
 
+	// #region Clientes
 	@Test
 	public void methodNotAllowedById_thenStatus405() throws Exception {
 		this.mockMvc.perform(get("/clientes/id/")).andExpect(status().isMethodNotAllowed());
+	}
+
+	@Test
+	public void methodNotAllowedPost_thenStatus400() throws Exception {
+		this.mockMvc.perform(post("/clientes/")).andExpect(status().isBadRequest());
 	}
 
 	@Test
@@ -41,11 +43,6 @@ public class DemoApplicationTests {
 	@Test
 	public void methodNotAllowedDelete_thenStatus405() throws Exception {
 		this.mockMvc.perform(delete("/clientes/")).andExpect(status().isMethodNotAllowed());
-	}
-
-	@Test
-	public void methodNotAllowedPost_thenStatus400() throws Exception {
-		this.mockMvc.perform(post("/clientes/")).andExpect(status().isBadRequest());
 	}
 
 	@Test
@@ -68,6 +65,9 @@ public class DemoApplicationTests {
 		this.mockMvc.perform(delete("/clientes/1")).andExpect(status().isNotFound());
 	}
 
+	// #endregion
+
+	// #region Cidades
 	@Test
 	public void findCidadeyNome_thenStatus404() throws Exception {
 		this.mockMvc.perform(get("/cidades/nome")).andExpect(status().isNotFound());
@@ -80,7 +80,7 @@ public class DemoApplicationTests {
 
 	@Test
 	public void saveCidade_thenStatus404() throws Exception {
-		//O estado não existe, logo, deve retornar um 404
+		// O estado não existe, logo, deve retornar um 404
 		String json = new ObjectMapper().writeValueAsString(new CidadePostDTO("Recife", "XZ"));
 
 		this.mockMvc.perform(post("/cidades").content(json).contentType(MediaType.APPLICATION_JSON)
@@ -94,4 +94,26 @@ public class DemoApplicationTests {
 		this.mockMvc.perform(post("/cidades").content(json).contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
 	}
+
+	@Test
+	public void findCidadeByNome_thenStatus200() throws Exception {
+		String json = new ObjectMapper().writeValueAsString(new CidadePostDTO("Recife", "PE"));
+
+		this.mockMvc.perform(post("/cidades").content(json).contentType(MediaType.APPLICATION_JSON)
+				.accept(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
+
+		this.mockMvc.perform(get("/cidades/recife")).andExpect(status().isOk());
+	}
+
+	@Test
+	public void findCidadeByEstado_thenStatus200() throws Exception {
+		String json = new ObjectMapper().writeValueAsString(new CidadePostDTO("Recife", "PE"));
+
+		this.mockMvc.perform(post("/cidades").content(json).contentType(MediaType.APPLICATION_JSON)
+				.accept(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
+
+		this.mockMvc.perform(get("/cidades/estado/pe")).andExpect(status().isOk());
+	}
+
+	// #endregion
 }

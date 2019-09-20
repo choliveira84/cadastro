@@ -29,7 +29,7 @@ class CidadeServiceImpl implements CidadeService {
 
     @Override
     public CidadeDTO findByNome(@NotEmpty String nome) {
-        Cidade cidade = repository.findByNome(nome);
+        Cidade cidade = repository.findByNomeIgnoreCase(nome);
 
         if (cidade == null) {
             throw new EntityNotFoundException(String.format("Não foi encontrado a cidade para o nome '%s'", nome));
@@ -41,7 +41,7 @@ class CidadeServiceImpl implements CidadeService {
     @Override
     public List<CidadeDTO> findByEstado(String estado) {
         String sigla = estado.toUpperCase();
-        List<Cidade> cidades = repository.findByEstado(sigla);
+        List<Cidade> cidades = repository.findByEstadoIgnoreCase(sigla);
 
         if (CollectionUtils.isEmpty(cidades)) {
             throw new EntityNotFoundException(String.format("Não foram encontradas cidades para o estado '%s'", sigla));
@@ -75,7 +75,7 @@ class CidadeServiceImpl implements CidadeService {
             throw new IllegalArgumentException("Id inválido");
         }
 
-      return repository.existsById(id);
+        return repository.existsById(id);
     }
 
     private CidadeDTO returnDTO(Cidade source) {

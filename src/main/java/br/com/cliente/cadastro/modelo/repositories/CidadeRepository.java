@@ -13,7 +13,7 @@ import br.com.cliente.cadastro.modelo.entity.Cidade;
 @Repository
 public interface CidadeRepository extends JpaRepository<Cidade, Long> {
 
-    Cidade findByNome(String nome);
+    Cidade findByNomeIgnoreCase(String nome);
 
-	List<Cidade> findByEstado(String siglaEstado);
+    List<Cidade> findByEstadoIgnoreCase(String siglaEstado);
 }
