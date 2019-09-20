@@ -53,7 +53,7 @@ class ClienteServiceImpl implements ClienteService {
     @Override
     public ClienteDTO save(ClientePostDTO dto) {
         LocalDate dataAtual = LocalDate.now();
-        LocalDate dataNascimento = dto.getDataNascimento();
+        LocalDate dataNascimento = LocalDate.parse(dto.getDataNascimento());
 
         if (dataNascimento.isAfter(dataAtual)) {
             throw new InvalidDateException("A data atual não pode ser menor que a data de nascimento");
@@ -107,8 +107,9 @@ class ClienteServiceImpl implements ClienteService {
         BeanUtils.copyProperties(source, target);
 
         target.setCidade(new Cidade(source.getCidade()));
-
+        target.setDataNascimento(LocalDate.parse(source.getDataNascimento()));
         target.setIdade(idade);
+
         return target;
     }
 

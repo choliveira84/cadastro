@@ -1,17 +1,19 @@
 package br.com.cliente.cadastro.controllers.cliente;
 
-import java.time.LocalDate;
-
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 import br.com.cliente.cadastro.modelo.entity.Cliente;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * ClienteDTO
  */
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class ClientePostDTO {
 
     @NotBlank(message = Cliente.VALIDACAO_NOME)
@@ -21,8 +23,8 @@ public class ClientePostDTO {
     private Character sexo;
 
     @NotNull(message = Cliente.VALIDACAO_DATA_NASCIMENTO)
-    private LocalDate dataNascimento;
+    private String dataNascimento;
 
-    @NotNull
+    @NotNull(message = "A cidade não pode ser nula")
     private Long cidade;
 }

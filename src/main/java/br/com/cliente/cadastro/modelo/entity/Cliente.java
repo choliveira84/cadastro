@@ -1,5 +1,7 @@
 package br.com.cliente.cadastro.modelo.entity;
 
+import static java.lang.Character.toUpperCase;
+
 import java.io.Serializable;
 import java.time.LocalDate;
 
@@ -51,4 +53,8 @@ public class Cliente implements Serializable {
 
     @ManyToOne
     private Cidade cidade;
+
+    public void setSexo(Character sexo) {
+        this.sexo = toUpperCase(sexo);
+    }
 }
